@@ -145,62 +145,38 @@ export const AppLogo: React.FC<AppLogoProps> = ({ className = "w-12 h-12", showT
         <line
           x1="110"
           y1="230"
-          x2="390"
+          x2="455"
           y2="230"
           stroke="#d35400"
           strokeWidth="3"
           strokeLinecap="round"
         />
 
-        {/* "गीता" Bold Text in Devanagari script style design */}
-        {/* Shirorekha (Top horizontal bar) */}
-        <rect x="254" y="112" width="130" height="9" rx="1.5" fill="#0f2a4a" />
-        
-        {/* Letter "गी" vertical and curve */}
-        <path
-          d="M272 112 L272 175 M272 122 C248 112, 248 140, 272 145"
-          stroke="#0f2a4a"
-          strokeWidth="8"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-        {/* Ee ki maatra curve on left */}
-        <path
-          d="M272 112 C255 102, 230 115, 226 150 M226 150 L226 175"
-          stroke="#0f2a4a"
-          strokeWidth="6"
-          strokeLinecap="round"
-        />
-
-        {/* Letter "ता" */}
-        <path
-          d="M332 112 L332 175 M332 135 C310 135, 302 160, 302 175"
-          stroke="#0f2a4a"
-          strokeWidth="8"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-
-        {/* Kana (vertical end bar) */}
-        <path
-          d="M365 112 L365 175"
-          stroke="#0f2a4a"
-          strokeWidth="8"
-          strokeLinecap="round"
-        />
-
-        {/* "विज्डम" Saffron / Sanchaar Orange Text */}
+        {/* English Serif Typography: "GITA" and "WISDOM" */}
         <text
-          x="332"
-          y="226"
-          fontFamily="system-ui, -apple-system, sans-serif"
-          fontSize="36"
-          fontWeight="900"
-          fill="#e67e22"
-          textAnchor="middle"
-          letterSpacing="2"
+          x="262"
+          y="178"
+          fontFamily="Georgia, 'Times New Roman', Cambria, serif"
+          fontSize="72"
+          fontWeight="700"
+          fill="#0f2a4a"
+          letterSpacing="1.5"
+          textAnchor="start"
         >
-          विज्डम
+          GITA
+        </text>
+
+        <text
+          x="262"
+          y="222"
+          fontFamily="Georgia, 'Times New Roman', Cambria, serif"
+          fontSize="36"
+          fontWeight="700"
+          fill="#e67e22"
+          letterSpacing="3.5"
+          textAnchor="start"
+        >
+          WISDOM
         </text>
 
         {/* Decorative Lotus petal flourish near baseline */}
@@ -213,7 +189,7 @@ export const AppLogo: React.FC<AppLogoProps> = ({ className = "w-12 h-12", showT
 
         {/* Sanskrit Subtext: शाश्वत ज्ञान. व्यावहारिक जीवन. */}
         <text
-          x="250"
+          x="282"
           y="255"
           fontFamily="system-ui, -apple-system, sans-serif"
           fontSize="14.5"
