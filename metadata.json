@@ -1,5 +1,5 @@
 {
-  "name": "Bhagavad Gita Life Guidance",
+  "name": "Gita Guidance",
   "description": "Seek guidance for career, relationship, and health problems through relevant verses from the Bhagavad Gita and tailored solutions.",
   "requestFramePermissions": ["microphone"],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]

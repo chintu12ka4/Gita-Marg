@@ -55,6 +55,36 @@ export default function App() {
   // Stats
   const [versesExplored, setVersesExplored] = useState(5);
 
+  // Credit and subscription system
+  const [credits, setCredits] = useState<number>(() => {
+    try {
+      const savedCredits = localStorage.getItem("gita_guidance_credits");
+      if (savedCredits !== null) {
+        return parseInt(savedCredits, 10);
+      }
+    } catch (e) {
+      console.warn(e);
+    }
+    return 2;
+  });
+
+  const [isPremium, setIsPremium] = useState<boolean>(() => {
+    try {
+      const savedPremium = localStorage.getItem("gita_guidance_premium");
+      return savedPremium === "true";
+    } catch (e) {
+      console.warn(e);
+      return false;
+    }
+  });
+
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [paymentType, setPaymentType] = useState<"upi" | "card">("upi");
+  const [paymentName, setPaymentName] = useState("");
+  const [paymentDetails, setPaymentDetails] = useState("");
+  const [paymentLoading, setPaymentLoading] = useState(false);
+  const [paymentSuccess, setPaymentSuccess] = useState(false);
+
   // Speech feedback states
   const [isPlaying, setIsPlaying] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -321,6 +351,12 @@ Daily Meditation Note:
       return;
     }
 
+    // Credits and Subscription Enforcement
+    if (!isPremium && credits <= 0) {
+      setShowPaymentModal(true);
+      return;
+    }
+
     setIsLoading(true);
     setError(null);
     setIsPlaying(false);
@@ -350,6 +386,26 @@ Daily Meditation Note:
 
       setGuidance(data);
       setCurrentProblemForDisplay(textToQuery);
+
+      // Decrement credits if not premium
+      if (!isPremium) {
+        setCredits((prev) => {
+          const next = Math.max(0, prev - 1);
+          try {
+            localStorage.setItem("gita_guidance_credits", String(next));
+          } catch (e) {
+            console.error(e);
+          }
+          
+          // If they successfully used their last credit, open the payment modal shortly so they upgrade.
+          if (next === 0) {
+            setTimeout(() => {
+              setShowPaymentModal(true);
+            }, 1500);
+          }
+          return next;
+        });
+      }
 
       // Save to local journal history
       const newHistoryItem: HistoryItem = {
@@ -428,17 +484,36 @@ Daily Meditation Note:
           </div>
           <div>
             <h1 className="text-xl sm:text-2xl font-serif font-black tracking-tight text-[#5d4037] flex items-center gap-2">
-              GitaMarg
-              <span className="font-sans text-xs font-semibold bg-amber-100 text-[#e67e22] px-2 py-0.5 rounded-md uppercase tracking-wider">
-                V4 Bento
-              </span>
+              Gita Guidance
             </h1>
             <p className="text-[10px] sm:text-xs text-stone-400 font-sans italic tracking-wide">Timeless Vedic Counselor for Modern Struggles</p>
           </div>
         </div>
 
         {/* Global Toolbar Header items */}
-        <div className="flex items-center gap-3 w-full sm:w-auto justify-end">
+        <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto justify-end">
+          {/* Credit and Subscription Counter */}
+          {isPremium ? (
+            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-50 text-amber-700 border border-amber-200 text-xs font-bold shadow-xs">
+              <Sparkles className="w-3.5 h-3.5 text-amber-600 animate-pulse" />
+              <span>Premium Activated</span>
+            </div>
+          ) : (
+            <button
+              onClick={() => {
+                setPaymentSuccess(false);
+                setShowPaymentModal(true);
+              }}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-50 text-amber-800 hover:text-amber-950 border border-amber-200 hover:border-amber-300 text-xs font-semibold cursor-pointer transition-all shadow-xs"
+              title="Click to subscribe for ₹999/year"
+            >
+              <Compass className="w-3.5 h-3.5 text-[#e67e22]" />
+              <span>{credits} / 2 Free Credits Left</span>
+              <span className="bg-[#e67e22] text-white font-extrabold text-[9px] px-1.5 py-0.5 rounded uppercase tracking-wider">
+                Upgrade
+              </span>
+            </button>
+          )}
           {/* Audio read-aloud controller */}
           <button
             onClick={toggleSpeech}
@@ -768,11 +843,168 @@ Daily Meditation Note:
 
       </main>
 
-      {/* Bento Layout Footer */}
-      <footer className="mt-auto py-6 bg-white border-t border-[#e8e2d2] flex flex-col items-center justify-center gap-2 px-4 text-center">
-        <p className="text-[10px] text-stone-400 uppercase tracking-[0.2em]">Guided by Ancient Wisdom • Rendered for Modern Pathfinders</p>
-        <p className="text-[9px] text-[#e67e22] font-mono font-bold">BHAGAVAD GITA LIFE COMPASS v4 • POWERED BY GEMINI 3.5 FLASH</p>
-      </footer>
+      {/* 5. GORGEOUS PREMIUM ANNUAL PASS PAYMENT MODAL WITH GPAY QR & WHATSAPP SUPPORT */}
+      {showPaymentModal && (
+        <div className="fixed inset-0 z-50 overflow-y-auto bg-stone-900/80 backdrop-blur-md flex items-center justify-center p-4">
+          <div className="bg-[#fcfaf5] rounded-[2.5rem] border-2 border-amber-300 w-full max-w-md overflow-hidden shadow-2xl animate-fade-in text-[#2c2c2c]">
+            
+            {/* Header portion */}
+            <div className="bg-gradient-to-b from-amber-50 to-white px-6 pt-7 pb-4 text-center relative border-b border-[#e8e2d2]">
+              <button
+                onClick={() => setShowPaymentModal(false)}
+                className="absolute top-4 right-4 text-stone-400 hover:text-stone-700 font-bold text-lg p-2 transition-all cursor-pointer rounded-full hover:bg-stone-100"
+                title="Close"
+              >
+                ✕
+              </button>
+
+              <div className="mx-auto w-12 h-12 bg-amber-500 rounded-full flex items-center justify-center text-white shadow-lg shadow-amber-500/20 mb-2">
+                <Sparkles className="w-6 h-6 animate-pulse" />
+              </div>
+
+              <h3 className="text-xl font-serif font-black text-[#5d4037] tracking-tight">
+                Gita Guidance Premium
+              </h3>
+              <p className="text-stone-400 text-[11px] mt-0.5">Unlimited Lifelong Guidance & Multilingual Solutions</p>
+            </div>
+
+            {/* Content or Success screen */}
+            {paymentSuccess ? (
+              <div className="p-8 text-center space-y-6">
+                <div className="inline-flex w-16 h-16 bg-emerald-100 rounded-full items-center justify-center text-emerald-600 mb-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M20 6 9 17l-5-5"/>
+                  </svg>
+                </div>
+                <h4 className="text-xl font-serif font-bold text-emerald-800">
+                  Access Premium Enabled! Om Shanti 🙏
+                </h4>
+                <p className="text-sm text-stone-600 leading-relaxed max-w-xs mx-auto">
+                  Your annual subscription is now active on this device. May Sri Krishna guide your life actions with eternal clarity.
+                </p>
+                <div className="flex flex-col gap-2">
+                  <a
+                    href="https://wa.link/6xtft4"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full bg-[#25D366] hover:bg-[#128C7E] text-white py-3.5 rounded-2xl font-bold transition-all shadow-md flex items-center justify-center gap-2"
+                  >
+                    <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
+                      <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.5-5.739-1.446L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.825 1.451 5.436 0 9.86-4.37 9.864-9.799.002-2.63-1.023-5.101-2.885-6.963C16.528 2.008 14.07 1.01 11.49 1.01c-5.44 0-9.866 4.372-9.87 9.802 0 1.96.512 3.878 1.483 5.581L2.094 21.75l5.553-1.446c1.611.873 3.321 1.332 5.003 1.332zM17.02 14.12c-.226-.112-1.336-.657-1.543-.733-.207-.075-.357-.113-.508.113-.151.226-.584.733-.716.884-.132.15-.264.169-.49.056-.226-.113-.956-.352-1.821-1.121-.673-.6-1.127-1.341-1.259-1.567-.132-.226-.014-.348.099-.461.102-.102.226-.264.339-.396.113-.132.15-.226.226-.377.075-.15.038-.282-.019-.396-.056-.113-.508-1.22-.697-1.674-.183-.44-.37-.38-.508-.387-.13-.008-.28-.008-.431-.008-.15 0-.396.056-.603.282-.207.226-.791.772-.791 1.884 0 1.111.81 2.184.923 2.335.113.15 1.594 2.434 3.862 3.411.539.233.959.372 1.288.477.54.172 1.03.148 1.417.09.431-.064 1.336-.546 1.525-1.047.19-.5.19-.93.132-1.02-.056-.094-.207-.151-.433-.264z"/>
+                    </svg>
+                    <span>Connect Live on WhatsApp</span>
+                  </a>
+                  <button
+                    onClick={() => setShowPaymentModal(false)}
+                    className="w-full bg-[#5d4037] text-white py-3 rounded-2xl font-bold hover:opacity-90 transition-all cursor-pointer"
+                  >
+                    Done • Back to Guidance
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div className="p-5 space-y-5">
+                
+                {/* 1. OFFICIAL GOOGLE PAY STYLE QR CODE CARD */}
+                <div className="bg-[#f0f4f9] rounded-3xl p-5 border border-[#dae0e8] text-center shadow-inner relative">
+                  
+                  {/* Small Google Pay styled merchant banner */}
+                  <div className="flex items-center justify-center gap-2.5 mb-4">
+                    <div className="w-8 h-8 rounded-full bg-[#fef08a] border border-amber-300 flex items-center justify-center text-[#854d0e] font-sans font-extrabold text-sm shadow-xs">
+                      G
+                    </div>
+                    <div>
+                      <span className="text-base font-bold tracking-tight text-[#3c4043] font-sans block leading-tight">
+                        jaya aggarwal
+                      </span>
+                      <span className="text-[10px] text-stone-400 font-mono block text-left">GPay Merchant Recipient</span>
+                    </div>
+                  </div>
+
+                  {/* QR Image Container with thin boundary and Google Pay center-badge design */}
+                  <div className="relative inline-block bg-white p-4.5 rounded-2xl border border-stone-200/60 shadow-md">
+                    <img
+                      src={`https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent("upi://pay?pa=genius.jaya01@okhdfcbank&pn=jaya%20aggarwal&am=999.00&cu=INR")}`}
+                      alt="UPI QR Code - Scan with GPay, PhonePe, Paytm"
+                      referrerPolicy="no-referrer"
+                      className="w-48 h-48 mx-auto"
+                    />
+                    <div className="mt-1 text-[10px] text-stone-400 font-sans tracking-wide">
+                      Scan QR with GPay, Paytm or PhonePe
+                    </div>
+                  </div>
+
+                  {/* Amount and UPI Details with Copy function */}
+                  <div className="mt-3.5 space-y-1">
+                    <div className="text-xl font-bold text-[#e67e22] font-mono tracking-tight">
+                      Amount: ₹999.00
+                    </div>
+
+                    <div className="flex items-center justify-center gap-1.5 text-xs text-stone-600 bg-white/70 py-1.5 px-3 rounded-xl border border-stone-200/50 max-w-[260px] mx-auto">
+                      <span className="font-mono select-all text-[11px]" id="upi-string">
+                        genius.jaya01@okhdfcbank
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          navigator.clipboard.writeText("genius.jaya01@okhdfcbank");
+                          alert("UPI ID Copied to Clipboard!");
+                        }}
+                        className="text-[#e67e22] hover:text-[#d35400] font-bold text-[10px] uppercase font-sans tracking-tight cursor-pointer py-0.5 px-1.5 rounded hover:bg-amber-50"
+                        title="Copy text handle"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <span className="text-[9px] text-[#5d4037] font-semibold tracking-widest uppercase block mt-1">
+                      Scan to pay with any UPI app
+                    </span>
+                  </div>
+
+                </div>
+
+                {/* 2. THE WHATSAPP ACTIVATION INSTRUCTIONS */}
+                <div className="bg-amber-50/50 border border-amber-200/50 rounded-2xl p-4 text-xs space-y-2.5">
+                  <h4 className="font-bold text-amber-900 flex items-center gap-1">
+                    <Sparkles className="w-3.5 h-3.5 text-amber-600" />
+                    How to Activate Your Yearly Pass:
+                  </h4>
+                  <ol className="list-decimal pl-4 space-y-1.5 text-stone-600 leading-normal">
+                    <li>Scan the official QR above or copy the UPI ID to pay <strong>₹999</strong>.</li>
+                    <li>Open WhatsApp using the green button below and send your payment receipt/screenshot.</li>
+                    <li>Our team will instantly activate unlimited queries for your account!</li>
+                  </ol>
+                </div>
+
+                {/* 3. CORE INTEGRATIONS BUTTONS */}
+                <div className="flex flex-col gap-2.5 pt-1">
+                  
+                  {/* WhatsApp redirect button */}
+                  <a
+                    href="https://wa.link/6xtft4"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full bg-[#25D366] hover:bg-[#128C7E] text-white py-3.5 px-4 rounded-2xl font-bold text-center flex items-center justify-center gap-2.5 transition-all shadow-md shadow-emerald-500/10 cursor-pointer text-sm"
+                  >
+                    <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
+                      <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.5-5.739-1.446L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.825 1.451 5.436 0 9.86-4.37 9.864-9.799.002-2.63-1.023-5.101-2.885-6.963C16.528 2.008 14.07 1.01 11.49 1.01c-5.44 0-9.866 4.372-9.87 9.802 0 1.96.512 3.878 1.483 5.581L2.094 21.75l5.553-1.446c1.611.873 3.321 1.332 5.003 1.332zM17.02 14.12c-.226-.112-1.336-.657-1.543-.733-.207-.075-.357-.113-.508.113-.151.226-.584.733-.716.884-.132.15-.264.169-.49.056-.226-.113-.956-.352-1.821-1.121-.673-.6-1.127-1.341-1.259-1.567-.132-.226-.014-.348.099-.461.102-.102.226-.264.339-.396.113-.132.15-.226.226-.377.075-.15.038-.282-.019-.396-.056-.113-.508-1.22-.697-1.674-.183-.44-.37-.38-.508-.387-.13-.008-.28-.008-.431-.008-.15 0-.396.056-.603.282-.207.226-.791.772-.791 1.884 0 1.111.81 2.184.923 2.335.113.15 1.594 2.434 3.862 3.411.539.233.959.372 1.288.477.54.172 1.03.148 1.417.09.431-.064 1.336-.546 1.525-1.047.19-.5.19-.93.132-1.02-.056-.094-.207-.151-.433-.264z"/>
+                    </svg>
+                    <strong>Open WhatsApp Setup (wa.link)</strong>
+                  </a>
+
+
+                  
+                </div>
+
+                <div className="text-[10px] text-stone-400 text-center uppercase tracking-wider font-mono">
+                  🔒 Secured Peer-to-Peer UPI Gateway
+                </div>
+              </div>
+            )}
+            
+          </div>
+        </div>
+      )}
 
     </div>
   );
