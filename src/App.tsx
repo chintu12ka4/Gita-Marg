@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Compass, Sparkles, RefreshCw, Briefcase, Heart, Shield, Landmark, HelpCircle, History, BookOpen, AlertCircle, Volume2, VolumeX, Copy, Download, Trash2, ListFilter, Globe2, Mic, MicOff } from "lucide-react";
 import GitaLoader from "./components/GitaLoader";
+import { AppLogo } from "./components/AppLogo";
 import { GuidanceResult, HistoryItem } from "./types";
 
 const SUGGESTIONS = [
@@ -263,7 +264,7 @@ export default function App() {
     const activeCategory = guidance ? category : "Eternal Path";
 
     const formattedText = `
-Bhagavad Gita Guidance - ${activeResult.chapterAndVerse}
+Bhagavad Gitawisdom - ${activeResult.chapterAndVerse}
 ==================================================
 Topic: ${activeCategory}
 Problem Statement: "${activeProblem}"
@@ -301,7 +302,7 @@ Created with GitaMarg - The Path of Wisdom.
     const activeCategory = guidance ? category : "Eternal Path";
 
     const formattedText = `
-Bhagavad Gita Guidance Journal Entry
+Bhagavad Gitawisdom Journal Entry
 =====================================
 Category: ${activeCategory}
 Date: ${new Date().toLocaleDateString()}
@@ -477,14 +478,10 @@ Daily Meditation Note:
       {/* Dynamic Header */}
       <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-[#e8e2d2] px-4 sm:px-8 py-4 flex flex-col sm:flex-row items-center justify-between gap-4">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-[#e67e22] rounded-full flex items-center justify-center text-white shadow-md shadow-amber-500/20">
-            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="animate-pulse">
-              <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/>
-            </svg>
-          </div>
+          <AppLogo className="w-16 h-16 sm:w-20 sm:h-10" />
           <div>
             <h1 className="text-xl sm:text-2xl font-serif font-black tracking-tight text-[#5d4037] flex items-center gap-2">
-              Gita Guidance
+              Gitawisdom
             </h1>
             <p className="text-[10px] sm:text-xs text-stone-400 font-sans italic tracking-wide">Timeless Vedic Counselor for Modern Struggles</p>
           </div>
@@ -858,12 +855,12 @@ Daily Meditation Note:
                 ✕
               </button>
 
-              <div className="mx-auto w-12 h-12 bg-amber-500 rounded-full flex items-center justify-center text-white shadow-lg shadow-amber-500/20 mb-2">
-                <Sparkles className="w-6 h-6 animate-pulse" />
+              <div className="mx-auto w-16 h-16 flex items-center justify-center mb-2">
+                <AppLogo className="w-16 h-16" />
               </div>
 
               <h3 className="text-xl font-serif font-black text-[#5d4037] tracking-tight">
-                Gita Guidance Premium
+                Gitawisdom Premium
               </h3>
               <p className="text-stone-400 text-[11px] mt-0.5">Unlimited Lifelong Guidance & Multilingual Solutions</p>
             </div>

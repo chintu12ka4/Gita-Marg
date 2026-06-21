@@ -59,7 +59,7 @@ export default function GuidanceDisplay({
 
   const handleCopy = () => {
     const formattedText = `
-Bhagavad Gita Guidance - ${guidance.chapterAndVerse}
+Bhagavad Gitawisdom - ${guidance.chapterAndVerse}
 ==================================================
 Topic: ${category}
 Your Problem: "${problemText}"
@@ -84,7 +84,7 @@ ${guidance.problemAnalysis}
 [Encouraging Words]
 ${guidance.summaryNote}
 
-Derived with love from Bhagavad Gita Life Advisor app.
+Derived with love from Bhagavad Gitawisdom app.
     `;
     navigator.clipboard.writeText(formattedText.trim());
     setCopied(true);
@@ -93,7 +93,7 @@ Derived with love from Bhagavad Gita Life Advisor app.
 
   const handleDownload = () => {
     const formattedText = `
-Bhagavad Gita Life Guidance
+Bhagavad Gitawisdom
 ===========================
 Topic: ${category}
 Date Gathered: ${new Date().toLocaleDateString()}
@@ -132,7 +132,7 @@ Blessed Be Your Spiritual Walk.
     const element = document.createElement("a");
     const file = new Blob([formattedText.trim()], { type: "text/plain" });
     element.href = URL.createObjectURL(file);
-    element.download = `Gita_Guidance_${category}_${guidance.chapterAndVerse.replace(/[\s,]+/g, "_")}.txt`;
+    element.download = `Gitawisdom_${category}_${guidance.chapterAndVerse.replace(/[\s,]+/g, "_")}.txt`;
     document.body.appendChild(element);
     element.click();
     document.body.removeChild(element);
