@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Sparkles, Volume2, VolumeX, AlertCircle, Mic, MicOff, RefreshCw } from "lucide-react";
+import { Sparkles, Volume2, VolumeX, AlertCircle, Mic, MicOff, RefreshCw, Lock, ShieldCheck } from "lucide-react";
 import GitaLoader from "./components/GitaLoader";
 import GuidanceDisplay from "./components/GuidanceDisplay";
+import PaymentBox from "./components/PaymentBox";
 import { AppLogo } from "./components/AppLogo";
 import { GuidanceResult } from "./types";
 
@@ -44,6 +45,13 @@ export default function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [guidance, setGuidance] = useState<GuidanceResult | null>(null);
   const [error, setError] = useState<string | null>(null);
+
+  const [adviceCount, setAdviceCount] = useState<number>(() => {
+    if (typeof window !== "undefined") {
+      return parseInt(localStorage.getItem("gita_advice_count") || "0", 10);
+    }
+    return 0;
+  });
 
   // Audio / Speech State
   const [isListening, setIsListening] = useState(false);
@@ -184,6 +192,13 @@ export default function App() {
       const data = (await response.json()) as GuidanceResult;
       setGuidance(data);
       setCurrentProblemForDisplay(textToQuery);
+      
+      // Increment and save advice count to persist free-tier status
+      const newCount = adviceCount + 1;
+      setAdviceCount(newCount);
+      if (typeof window !== "undefined") {
+        localStorage.setItem("gita_advice_count", String(newCount));
+      }
 
     } catch (err: any) {
       console.error(err);
@@ -288,7 +303,18 @@ export default function App() {
             
             {/* PROBLEM INPUT PANEL */}
             {!guidance && (
-              <div className="bg-white rounded-3xl p-5 sm:p-6 shadow-sm border border-[#ede7d9] space-y-5 animate-fade-in">
+              <div className="space-y-6">
+                <div className="bg-white rounded-3xl p-5 sm:p-6 shadow-sm border border-[#ede7d9] space-y-5 animate-fade-in">
+                  
+                  {/* Free advice limit reached warning */}
+                  {adviceCount >= 1 && (
+                    <div className="bg-gradient-to-r from-amber-50 to-amber-100 rounded-2xl p-4 border border-amber-300 text-stone-800 flex gap-3 text-xs sm:text-sm items-center shadow-xs">
+                      <Lock className="w-5 h-5 text-amber-700 shrink-0 animate-bounce" />
+                      <div className="flex-1 font-semibold leading-relaxed">
+                        आप पहले ही <strong>१ मुफ्त मार्गदर्शन</strong> प्राप्त कर चुके हैं। अब अगले सवालों के दिव्य उत्तर देखने के लिए नीचे दिए गए QR कोड से गुरु दक्षिणा दे सकते हैं या व्हाट्सएप पर स्क्रीनशॉट भेज सकते हैं।
+                      </div>
+                    </div>
+                  )}
                 
                 {/* Visual Tip Container */}
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-amber-50/50 p-3 rounded-2xl border border-amber-200/50">
@@ -378,12 +404,16 @@ export default function App() {
                     }`}
                   >
                     <Sparkles className="w-4 h-4" />
-                    <span>सलाह पाएँ (Get Advice)</span>
+                    <span>
+                      {adviceCount === 0 ? "Get first advice free" : "सलाह पाएँ (Get Advice)"}
+                    </span>
                   </button>
                 </div>
 
               </div>
-            )}
+              {adviceCount >= 1 && <PaymentBox />}
+            </div>
+          )}
 
             {/* RESULTS VIEW */}
             {guidance && (

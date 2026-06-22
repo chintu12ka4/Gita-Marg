@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { GuidanceResult } from "../types";
 import { Volume2, VolumeX, Copy, Download, Sparkles, BookOpen, Clock, AlertCircle } from "lucide-react";
+import PaymentBox from "./PaymentBox";
 
 interface GuidanceDisplayProps {
   guidance: GuidanceResult;
@@ -308,6 +309,9 @@ Blessed Be Your Spiritual Walk.
             ))}
           </div>
         </div>
+
+        {/* Payment Box with QR and WhatsApp */}
+        <PaymentBox />
 
         {/* Final Divine Truth banner */}
         <div className="mt-8 border-t border-dashed border-amber-200 pt-6 text-center">
