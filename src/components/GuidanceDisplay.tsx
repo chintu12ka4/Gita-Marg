@@ -158,9 +158,9 @@ Blessed Be Your Spiritual Walk.
   };
 
   const categories = {
-    Career: "Career & Life Duty",
-    Relationships: "Loving Relationships",
-    Health: "Mind-Body Mastery"
+    Career: "काम और करियर (Work)",
+    Relationships: "रिश्ते और परिवार (Relations)",
+    Health: "स्वास्थ्य और सेहत (Health)"
   };
 
   return (
@@ -168,12 +168,12 @@ Blessed Be Your Spiritual Walk.
       {/* Overview Tag & Actions bar */}
       <div className="flex flex-wrap items-center justify-between gap-4 border-b border-stone-200 pb-4">
         <div>
-          <span className="text-xs text-stone-500 uppercase tracking-widest font-mono font-bold">Your Query Area</span>
+          <span className="text-xs text-stone-500 uppercase tracking-widest font-mono font-bold">मदद की केटेगरी</span>
           <div className="flex items-center gap-2 mt-1">
             <span className={`px-2.5 py-0.5 rounded-full text-xs font-medium font-sans ${themeColors[category].accent}`}>
-              {categories[category]}
+              {categories[category] || "गीता दर्शन"}
             </span>
-            <span className="text-xs text-stone-400 font-serif">Solutions Portal</span>
+            <span className="text-xs text-stone-400 font-serif">सलाह केंद्र</span>
           </div>
         </div>
 
@@ -184,19 +184,19 @@ Blessed Be Your Spiritual Walk.
             onClick={toggleSpeech}
             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-semibold font-sans transition-all cursor-pointer ${
               isPlaying
-                ? "bg-amber-600 text-white border-amber-600 animate-pulse"
-                : "bg-white text-stone-700 border-stone-200 hover:bg-stone-50"
+                ? "bg-red-600 text-white border-red-600 animate-pulse"
+                : "bg-amber-50 text-amber-900 border-amber-200 hover:bg-amber-100"
             }`}
             title="Read results aloud"
             id="btn-tts"
           >
             {isPlaying ? (
               <>
-                <VolumeX className="w-3.5 h-3.5" /> Stop Reading
+                <VolumeX className="w-3.5 h-3.5" /> 🛑 आवाज़ बंद करें
               </>
             ) : (
               <>
-                <Volume2 className="w-3.5 h-3.5" /> Listen Guidance
+                <Volume2 className="w-3.5 h-3.5" /> 🔊 आवाज़ सुनें (बोलकर सुनें)
               </>
             )}
           </button>
@@ -209,7 +209,7 @@ Blessed Be Your Spiritual Walk.
             id="btn-copy"
           >
             <Copy className="w-3.5 h-3.5 text-stone-500" />
-            {copied ? "Copied!" : "Copy"}
+            {copied ? "कॉपी हो गया!" : "📋 कॉपी करें"}
           </button>
 
           {/* Download Button */}
@@ -219,7 +219,7 @@ Blessed Be Your Spiritual Walk.
             title="Download text file"
             id="btn-download"
           >
-            <Download className="w-3.5 h-3.5 text-stone-500" /> Save Offline
+            <Download className="w-3.5 h-3.5 text-stone-500" /> 📥 फ़ोन में सेव करें
           </button>
         </div>
       </div>
@@ -240,7 +240,7 @@ Blessed Be Your Spiritual Walk.
           <div className="flex items-center gap-2 text-amber-700">
             <BookOpen className="w-4 h-4 text-amber-600" />
             <span className="font-mono text-xs font-semibold uppercase tracking-widest text-[#b5952d]">
-              The Timeless Verse
+              गीता का दिव्य श्लोक
             </span>
           </div>
           <span className="bg-amber-100 text-amber-900 border border-amber-200 px-3 py-1 rounded-full text-xs font-mono font-bold shadow-xs">
@@ -256,16 +256,16 @@ Blessed Be Your Spiritual Walk.
         </div>
 
         {/* Phonetic Transliteration */}
-        <div className="text-center italic text-stone-600 font-medium text-sm sm:text-base font-serif py-1 px-4 leading-relaxed max-w-xl mx-auto mb-6">
+        <div className="text-center italic text-stone-500 font-medium text-xs sm:text-sm font-sans py-1 px-4 leading-relaxed max-w-xl mx-auto mb-6">
           {guidance.shlokaTransliterated}
         </div>
 
         {/* Shloka Meaning Card */}
         <div className="border-t border-b border-amber-100 py-5 my-6 space-y-2">
           <h4 className="text-stone-400 uppercase tracking-wider font-mono text-xs text-center font-bold">
-            English Translation
+            सरल हिंदी में इसका अर्थ:
           </h4>
-          <p className="text-stone-800 text-center font-serif text-base leading-relaxed italic max-w-2xl mx-auto">
+          <p className="text-[#5d4037] text-center font-serif text-base sm:text-lg leading-relaxed font-bold max-w-2xl mx-auto">
             "{guidance.shlokaMeaning}"
           </p>
         </div>
@@ -274,15 +274,12 @@ Blessed Be Your Spiritual Walk.
         <div className="space-y-3 mt-8">
           <div className="flex items-center gap-2">
             <Sparkles className="w-4 h-4 text-amber-700" />
-            <h3 className="font-sans font-bold text-stone-900 text-base">
-              Krishna's Answer to Your Problem
+            <h3 className="font-serif font-black text-[#5d4037] text-base sm:text-lg">
+              आपकी परेशानी पर भगवान कृष्ण की सलाह:
             </h3>
           </div>
-          <div className="bg-amber-50/40 rounded-xl p-5 border border-stone-100/50 shadow-xs">
-            <div className="mb-3 text-[11px] font-mono uppercase tracking-widest text-[#a88a2a] flex items-center gap-1 bg-[#fffbe6] w-fit px-2 py-0.5 rounded border border-amber-100">
-              <Clock className="w-3 h-3" /> Synthesis Analysis
-            </div>
-            <p className="text-stone-800 font-sans text-sm sm:text-base leading-relaxed whitespace-pre-line">
+          <div className="bg-amber-100/30 rounded-xl p-5 border border-amber-200/50 shadow-xs">
+            <p className="text-stone-800 font-sans text-sm sm:text-base leading-relaxed whitespace-pre-line font-medium">
               {guidance.problemAnalysis}
             </p>
           </div>
@@ -290,20 +287,20 @@ Blessed Be Your Spiritual Walk.
 
         {/* Actionable Path segment */}
         <div className="mt-8 space-y-4">
-          <h4 className="font-sans font-bold text-stone-900 text-sm tracking-wide uppercase border-b border-stone-200 pb-2">
-            The Three Steps of Action (Sadhana)
+          <h4 className="font-serif font-black text-[#5d4037] text-sm sm:text-base tracking-wide border-b border-stone-200 pb-2">
+            निदान: आपके लिए ३ आसान उपाय (सरल क़दम):
           </h4>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {guidance.actionableGuidance.map((step, idx) => (
               <div
                 key={idx}
-                className="bg-white rounded-xl p-4 border border-stone-200/60 shadow-xs relative flex flex-col justify-between hover:shadow-md transition-shadow"
+                className="bg-white rounded-xl p-4 border border-amber-200/60 shadow-xs relative flex flex-col justify-between hover:shadow-md transition-shadow"
               >
                 <div>
-                  <span className="w-7 h-7 rounded-lg bg-[#b5952d] text-white flex items-center justify-center font-mono text-sm font-black mb-3 shrink-0 shadow-sm shadow-amber-500/20">
+                  <span className="w-7 h-7 rounded-lg bg-amber-600 text-white flex items-center justify-center font-mono text-sm font-black mb-3 shrink-0 shadow-sm shadow-amber-500/20">
                     {idx + 1}
                   </span>
-                  <p className="text-stone-800 text-xs sm:text-sm leading-relaxed font-medium">
+                  <p className="text-stone-800 text-xs sm:text-sm leading-relaxed font-bold">
                     {step}
                   </p>
                 </div>
@@ -315,7 +312,7 @@ Blessed Be Your Spiritual Walk.
         {/* Final Divine Truth banner */}
         <div className="mt-8 border-t border-dashed border-amber-200 pt-6 text-center">
           <div className="w-2.5 h-2.5 bg-amber-600 rounded-full mx-auto mb-3 animate-ping" style={{ animationDuration: "3s" }}></div>
-          <p className="font-serif italic text-amber-900 font-semibold text-sm max-w-lg mx-auto">
+          <p className="font-serif italic text-amber-950 font-bold text-sm sm:text-base max-w-lg mx-auto">
             "{guidance.summaryNote}"
           </p>
         </div>
@@ -325,10 +322,10 @@ Blessed Be Your Spiritual Walk.
       <div className="flex justify-center pt-2">
         <button
           onClick={onNewSeek}
-          className="bg-[#b5952d] hover:bg-[#96791d] text-white font-sans font-bold text-sm px-8 py-3 rounded-xl transition-all shadow-md shadow-amber-700/10 cursor-pointer flex items-center gap-2"
+          className="bg-amber-600 hover:bg-amber-700 text-white font-sans font-bold text-sm px-8 py-3 rounded-xl transition-all shadow-md cursor-pointer flex items-center gap-2"
           id="btn-seek-again"
         >
-          Seek Another Guidance
+          🔄 कोई दूसरी परेशानी पूछें (Ask another worry)
         </button>
       </div>
     </div>

@@ -3,28 +3,20 @@ import { motion, AnimatePresence } from "motion/react";
 
 const GITA_CONTEMPLATIONS = [
   {
-    text: "You have a right to perform your prescribed duties, but you are not entitled to the fruits of your actions.",
-    ref: "Bhagavad Gita 2.47"
+    text: "तुम्हारा अधिकार सिर्फ काम करने पर है, उसका फल क्या होगा इसपर नहीं। यानी फल की चिंता किए बिना मेहनत करो।",
+    ref: "भगवद गीता अध्याय २, श्लोक ४७"
   },
   {
-    text: "The mind is restless and difficult to control, but it can be conquered through regular practice and detachment.",
-    ref: "Bhagavad Gita 6.35"
+    text: "मन बहुत चंचल है और इसे काबू करना मुश्किल है, लेकिन सही सोच और लगातार अभ्यास से इसे शांत किया जा सकता है।",
+    ref: "भगवद गीता अध्याय ६, श्लोक ३५"
   },
   {
-    text: "For one who has conquered the mind, the mind is the best of friends. But for one who has failed to do so, the mind will remain the greatest enemy.",
-    ref: "Bhagavad Gita 6.6"
+    text: "जिसने अपने चंचल मन को काबू कर लिया, उसका मन ही उसका सबसे अच्छा दोस्त है।",
+    ref: "भगवद गीता अध्याय ६, श्लोक ६"
   },
   {
-    text: "Whatever action is performed by a great person, common people follow. Whatever standards they set by exemplary acts, all the world pursues.",
-    ref: "Bhagavad Gita 3.21"
-  },
-  {
-    text: "A person is said to be established in self-realization when they are free from all material desires, and their mind is satisfied in the self alone.",
-    ref: "Bhagavad Gita 2.55"
-  },
-  {
-    text: "Perform your duty equipoised, O Arjuna, abandoning all attachment to success or failure. Such equanimity is called Yoga.",
-    ref: "Bhagavad Gita 2.48"
+    text: "सफलता या असफलता की चिंता छोड़ दो, मन को शांत रखकर किया गया काम ही सबसे बड़ा योग है।",
+    ref: "भगवद गीता अध्याय २, श्लोक ४८"
   }
 ];
 
@@ -55,12 +47,12 @@ export default function GitaLoader() {
         </div>
       </div>
 
-      <p className="text-amber-700 font-medium tracking-widest text-xs uppercase mb-3 font-sans">
-        Consulting Timeless Wisdom
+      <p className="text-amber-700 font-bold tracking-widest text-sm uppercase mb-3 font-sans">
+        ज्ञान खोजा जा रहा है...
       </p>
 
-      <span className="text-xs text-stone-400 mb-6 italic block">
-        Sri Krishna is finding a matching shloka for your problem...
+      <span className="text-xs text-stone-500 mb-6 italic block">
+        भगवान कृष्ण आपकी परेशानी के लिए सबसे सही हल चुन रहे हैं, कृपया थोड़ी देर रुकें...
       </span>
 
       <div className="min-h-[120px] flex flex-col justify-center">
@@ -73,7 +65,7 @@ export default function GitaLoader() {
             transition={{ duration: 0.6 }}
             className="space-y-3"
           >
-            <p className="text-stone-700 italic font-serif text-lg leading-relaxed leading-extra">
+            <p className="text-stone-700 italic font-serif text-lg leading-relaxed">
               "{GITA_CONTEMPLATIONS[index].text}"
             </p>
             <p className="text-amber-600 text-xs font-mono tracking-wider font-semibold">
