@@ -72,114 +72,87 @@ Response Language constraint: Simple Conversational Hindi (सरल बोल�
 
 Provide the answer in warm, extremely simple colloquial Hindi (आम बोलचाल की हिन्दी) so someone using a smartphone for the first time can read and understand it instantly.`;
 
+    const config = {
+      systemInstruction,
+      responseMimeType: "application/json",
+      responseSchema: {
+        type: Type.OBJECT,
+        properties: {
+          shlokaSanskrit: {
+            type: Type.STRING,
+            description: "The authentic Sanskrit shloka in Devanagari script. Ensure correct spelling and sandhi."
+          },
+          shlokaTransliterated: {
+            type: Type.STRING,
+            description: "The phonetic Roman transliteration of the Sanskrit shloka with appropriate diacritics or standard phonetics."
+          },
+          chapterAndVerse: {
+            type: Type.STRING,
+            description: "The specific chapter and verse reference from the Bhagavad Gita (e.g., Chapter 6, Verse 5)."
+          },
+          shlokaMeaning: {
+            type: Type.STRING,
+            description: "The accurate, faithful English translation of the verse's absolute meaning."
+          },
+          problemAnalysis: {
+            type: Type.STRING,
+            description: "Detailed, empathetic synthesis mixing the scriptural meaning with the user's problem. Direct call to their current reality."
+          },
+          actionableGuidance: {
+            type: Type.ARRAY,
+            items: { type: Type.STRING },
+            description: "Exactly 3 clear, highly practical, actionable steps combining Gita wisdom and psychological/physical care for their specific situation."
+          },
+          summaryNote: {
+            type: Type.STRING,
+            description: "A final comforting, inspiring, or motivating sentence of hope and resilience."
+          }
+        },
+        required: ["shlokaSanskrit", "shlokaTransliterated", "chapterAndVerse", "shlokaMeaning", "problemAnalysis", "actionableGuidance", "summaryNote"]
+      },
+    };
+
     let response: any = null;
     let lastError: any = null;
     const modelsToTry = ["gemini-3.5-flash", "gemini-2.5-flash"];
+    const maxRetriesPerModel = 3;
 
     for (const currentModel of modelsToTry) {
-      try {
-        console.log(`Attempting to generate guidance using model: ${currentModel}`);
-        response = await client.models.generateContent({
-          model: currentModel,
-          contents: prompt,
-          config: {
-            systemInstruction,
-            responseMimeType: "application/json",
-            responseSchema: {
-              type: Type.OBJECT,
-              properties: {
-                shlokaSanskrit: {
-                  type: Type.STRING,
-                  description: "The authentic Sanskrit shloka in Devanagari script. Ensure correct spelling and sandhi."
-                },
-                shlokaTransliterated: {
-                  type: Type.STRING,
-                  description: "The phonetic Roman transliteration of the Sanskrit shloka with appropriate diacritics or standard phonetics."
-                },
-                chapterAndVerse: {
-                  type: Type.STRING,
-                  description: "The specific chapter and verse reference from the Bhagavad Gita (e.g., Chapter 6, Verse 5)."
-                },
-                shlokaMeaning: {
-                  type: Type.STRING,
-                  description: "The accurate, faithful English translation of the verse's absolute meaning."
-                },
-                problemAnalysis: {
-                  type: Type.STRING,
-                  description: "Detailed, empathetic synthesis mixing the scriptural meaning with the user's problem. Direct call to their current reality."
-                },
-                actionableGuidance: {
-                  type: Type.ARRAY,
-                  items: { type: Type.STRING },
-                  description: "Exactly 3 clear, highly practical, actionable steps combining Gita wisdom and psychological/physical care for their specific situation."
-                },
-                summaryNote: {
-                  type: Type.STRING,
-                  description: "A final comforting, inspiring, or motivating sentence of hope and resilience."
-                }
-              },
-              required: ["shlokaSanskrit", "shlokaTransliterated", "chapterAndVerse", "shlokaMeaning", "problemAnalysis", "actionableGuidance", "summaryNote"]
-            },
-          },
-        });
+      for (let attempt = 1; attempt <= maxRetriesPerModel; attempt++) {
+        try {
+          console.log(`Attempting to generate guidance using model: ${currentModel} (Attempt ${attempt}/${maxRetriesPerModel})`);
+          response = await client.models.generateContent({
+            model: currentModel,
+            contents: prompt,
+            config,
+          });
 
-        if (response && response.text) {
-          console.log(`Successfully generated guidance using model: ${currentModel}`);
-          break;
+          if (response && response.text) {
+            console.log(`Successfully generated guidance using model: ${currentModel} on attempt ${attempt}`);
+            break;
+          }
+        } catch (err: any) {
+          console.warn(`Attempt ${attempt} for Model ${currentModel} failed:`, err.message || err);
+          lastError = err;
+          if (attempt < maxRetriesPerModel) {
+            // Exponential backoff delay: 1st retry: 500ms, 2nd retry: 1500ms
+            const delay = attempt * 1000 - 500;
+            await new Promise((resolve) => setTimeout(resolve, delay));
+          }
         }
-      } catch (err: any) {
-        console.warn(`Model ${currentModel} failed:`, err.message || err);
-        lastError = err;
-        // Wait briefly (1 second) before trying the fallback or next step
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+      }
+      if (response && response.text) {
+        break;
       }
     }
 
     if (!response || !response.text) {
-      console.log("Triggering final emergency retry with gemini-2.5-flash after cooldown...");
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      console.log("Both models exhausted. Triggering final emergency retry with gemini-2.5-flash after a longer cooldown...");
+      await new Promise((resolve) => setTimeout(resolve, 3000));
       response = await client.models.generateContent({
         model: "gemini-2.5-flash",
         contents: prompt,
-        config: {
-          systemInstruction,
-          responseMimeType: "application/json",
-          responseSchema: {
-            type: Type.OBJECT,
-            properties: {
-              shlokaSanskrit: {
-                type: Type.STRING,
-                description: "The authentic Sanskrit shloka in Devanagari script. Ensure correct spelling and sandhi."
-              },
-              shlokaTransliterated: {
-                type: Type.STRING,
-                description: "The phonetic Roman transliteration of the Sanskrit shloka with appropriate diacritics or standard phonetics."
-              },
-              chapterAndVerse: {
-                type: Type.STRING,
-                description: "The specific chapter and verse reference from the Bhagavad Gita (e.g., Chapter 6, Verse 5)."
-              },
-              shlokaMeaning: {
-                type: Type.STRING,
-                description: "The accurate, faithful English translation of the verse's absolute meaning."
-              },
-              problemAnalysis: {
-                type: Type.STRING,
-                description: "Detailed, empathetic synthesis mixing the scriptural meaning with the user's problem. Direct call to their current reality."
-              },
-              actionableGuidance: {
-                type: Type.ARRAY,
-                items: { type: Type.STRING },
-                description: "Exactly 3 clear, highly practical, actionable steps combining Gita wisdom and psychological/physical care for their specific situation."
-              },
-              summaryNote: {
-                type: Type.STRING,
-                description: "A final comforting, inspiring, or motivating sentence of hope and resilience."
-              }
-            },
-            required: ["shlokaSanskrit", "shlokaTransliterated", "chapterAndVerse", "shlokaMeaning", "problemAnalysis", "actionableGuidance", "summaryNote"]
-          },
-        },
+        config,
       });
     }
 
